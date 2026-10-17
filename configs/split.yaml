@@ -1,0 +1,18 @@
+# Partición v1 — decidida antes de extraer landmarks o entrenar cualquier modelo.
+#
+# Alcance: solo la campaña S2 (cortesía + números). En S2 cada carpeta corresponde a
+# una persona; entre S1 (colores) y S2 la numeración de carpetas es independiente y
+# no hay forma de saber qué carpetas son la misma persona (34 carpetas vs 22
+# participantes reportados). Mezclar campañas abriría fuga de identidad.
+#
+# Unidad de generalización: el señante (persona nueva frente a la cámara).
+# Por eso todas las particiones se hacen sobre señantes, nunca sobre videos.
+version: v1
+sessions: [S2]
+seed: 2026
+
+# Grupos de cobertura: 'full' graba las 43 clases (33 cortesía + 10 números);
+# 'partial' graba 11 de cortesía + 10 números. Se estratifica por grupo para que
+# test y cada fold de validación contengan las 43 clases.
+test_signers_per_group: 2   # test = 2 full + 2 partial = 4 señantes (~22 % de los videos)
+n_folds: 7                  # dev = 14 señantes; cada fold valida con 1 full + 1 partial

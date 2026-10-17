@@ -1,0 +1,28 @@
+{
+  "config": {
+    "version": "v1",
+    "sessions": [
+      "S2"
+    ],
+    "seed": 2026,
+    "test_signers_per_group": 2,
+    "n_folds": 7
+  },
+  "signers_test": [
+    "S2-01",
+    "S2-03",
+    "S2-29",
+    "S2-31"
+  ],
+  "videos_test": 381,
+  "videos_dev": 1359,
+  "videos_per_fold": {
+    "1": 192,
+    "2": 192,
+    "3": 192,
+    "4": 192,
+    "5": 206,
+    "6": 192,
+    "7": 193
+  }
+}

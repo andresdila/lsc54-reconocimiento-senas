@@ -1,0 +1,29 @@
+# Datos: nunca se versionan (se obtienen con scripts/download_data.py)
+data/raw/
+data/processed/
+*.part
+
+# Excepción: el inventario de auditoría sí se versiona (es evidencia, sin datos personales)
+!data/inventory/
+
+# Resultados pesados
+outputs/
+mlruns/
+*.pt
+*.ckpt
+
+# Entorno
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+# LaTeX (se versiona .tex y el PDF final de cada entrega)
+reports/**/*.aux
+reports/**/*.log
+reports/**/*.out
+reports/**/*.toc
+reports/**/*.synctex.gz
+reports/**/*.bbl
+reports/**/*.blg

@@ -1,0 +1,14 @@
+# Python 3.11 o 3.12 (rango soportado por MediaPipe). Probado en macOS (Apple Silicon) y Windows.
+# Los rangos se fijarán a versiones exactas (requirements.lock) tras la primera instalación en ambos SO.
+mediapipe==0.10.21        # misma versión que los autores; trae opencv-contrib-python (no instalar opencv-python aparte: chocan)
+torch>=2.3,<3
+numpy>=1.26,<2            # mediapipe 0.10.21 exige numpy<2
+pandas>=2.2
+pyarrow>=15
+scikit-learn>=1.4
+pyyaml>=6
+requests>=2.31
+tqdm>=4.66
+mlflow>=2.12
+matplotlib>=3.8
+pytest>=8

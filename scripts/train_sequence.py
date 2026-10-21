@@ -19,7 +19,8 @@ Salidas:
   reports/e2_avance/runs/<name>/summary.json  configuración, git, métricas por fold, resumen, costo
   reports/e2_avance/runs/<name>/curves.csv    pérdida/exactitud/macro-F1 por época y fold
   reports/e2_avance/runs/<name>/oof.csv       predicciones fuera de muestra (para comparar y analizar errores)
-  mlruns/                                     el mismo registro en MLflow (ignorado por Git)
+  mlflow.db + mlruns/                         el mismo registro en MLflow (ignorados por Git;
+                                              ver con: mlflow ui --backend-store-uri sqlite:///mlflow.db)
 """
 from __future__ import annotations
 
@@ -272,8 +273,12 @@ def main() -> None:
     if not args.no_mlflow:
         try:
             import mlflow
-            mlflow.set_tracking_uri((ROOT / "mlruns").as_uri())
-            mlflow.set_experiment("lsc54-e2-secuencial")
+            # backend SQLite (el de archivos está en mantenimiento desde MLflow 3); artefactos en mlruns/
+            mlflow.set_tracking_uri(f"sqlite:///{(ROOT / 'mlflow.db').as_posix()}")
+            exp = "lsc54-e2-secuencial"
+            if mlflow.get_experiment_by_name(exp) is None:
+                mlflow.create_experiment(exp, artifact_location=(ROOT / "mlruns").as_uri())
+            mlflow.set_experiment(exp)
             mlf = mlflow
         except ImportError:
             print("[aviso] MLflow no está instalado; solo se escriben los JSON/CSV")

@@ -1,0 +1,37 @@
+# Modelo secuencial (Entrega 2) — configuración base.
+# Cada experimento cambia pocos factores respecto a esta base con `--set clave=valor`
+# (ver scripts/train_sequence.py y reports/e2_avance/EXPERIMENTOS.md). La partición y la
+# semilla vienen de configs/split.yaml: las mismas que la línea base.
+
+data:
+  n_frames: 32        # longitud fija tras remuestrear (mediana de los videos: 53 cuadros)
+  max_gap: 5          # vacíos de detección de hasta 5 cuadros (~0,17 s) se interpolan
+  max_abs: 6.0        # cuadros con coordenadas a >6 anchos de hombro se marcan ausentes (igual que logreg_plausible)
+  use_n_frames: true  # log(n_frames) como entrada a la cabeza (ablación: false)
+  use_mask: true      # 3 canales de presencia (pose, mano izq., mano der.) (ablación: false -> canales en 0)
+
+augment:
+  enabled: true
+  crop: 0.10          # recorte temporal por extremo
+  scale: 0.10
+  rot_deg: 10.0
+  noise: 0.01
+
+model:
+  encoder: gru        # gru | lstm | conv
+  d_model: 128
+  hidden: 128
+  layers: 2
+  dropout: 0.3        # antes de la capa de salida
+  rnn_dropout: 0.1    # tras la proyección y entre capas recurrentes
+
+train:
+  optimizer: adamw    # adamw | adam | sgd
+  lr: 0.001
+  weight_decay: 0.01
+  batch_size: 32
+  epochs: 80          # número FIJO de épocas: la métrica reportada es la de la última época
+  warmup_epochs: 5    # calentamiento lineal y luego coseno hasta 0
+  grad_clip: 1.0
+  label_smoothing: 0.0
+  class_weights: false

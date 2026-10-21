@@ -29,6 +29,7 @@ import copy
 import json
 import math
 import platform
+import shutil
 import subprocess
 import sys
 import time
@@ -313,7 +314,21 @@ def main() -> None:
         if mlf:
             mlf.log_params({"overrides": " ".join(args.set) or "(base)", "git_commit": commit, "n_params": meta["n_params"],
                             **{f"{s}.{k}": v for s, sec in cfg.items() for k, v in sec.items()}})
+        # reanudación: cada fold terminado queda en _folds/; si el proceso se interrumpe, al relanzar el
+        # mismo experimento (misma configuración y commit) se retoma desde el primer fold pendiente
+        ckpt = out_dir / "_folds"
+        ckpt.mkdir(exist_ok=True)
+        stamp = {"config": cfg, "git_commit": commit}
         for f in fold_ids:
+            fj, fo = ckpt / f"fold{f}.json", ckpt / f"fold{f}_oof.csv"
+            if fj.exists() and fo.exists():
+                saved = json.loads(fj.read_text(encoding="utf-8"))
+                if saved["stamp"] == json.loads(json.dumps(stamp)):
+                    folds.append(saved["fold"])
+                    all_curves += saved["curves"]
+                    oof_parts.append(pd.read_csv(fo))
+                    print(f"[fold {f}] retomado de {fj.name}: macro-F1 {saved['fold']['macro_f1']:.4f}", flush=True)
+                    continue
             tr = dev & (df.fold != f).to_numpy()
             va = dev & (df.fold == f).to_numpy()
             t_idx, v_idx = np.flatnonzero(tr), np.flatnonzero(va)
@@ -337,6 +352,9 @@ def main() -> None:
             top3 = np.array(classes)[np.argsort(proba, 1)[:, -3:][:, ::-1]]
             part["top3"] = ["|".join(r) for r in top3]
             oof_parts.append(part)
+            part.to_csv(fo, index=False)
+            fj.write_text(json.dumps({"stamp": stamp, "fold": folds[-1], "curves": [{"fold": int(f), **r} for r in curves]},
+                                     ensure_ascii=False), encoding="utf-8")
             print(f"[fold {f}] macro-F1 {folds[-1]['macro_f1']:.4f} · acc {folds[-1]['accuracy']:.4f} · "
                   f"{cost['fit_seconds']:.0f} s · mejor época (diagnóstico) {best['epoch']}", flush=True)
 
@@ -350,6 +368,7 @@ def main() -> None:
         (out_dir / "summary.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
         pd.DataFrame(all_curves).to_csv(out_dir / "curves.csv", index=False)
         oof.to_csv(out_dir / "oof.csv", index=False)
+        shutil.rmtree(ckpt, ignore_errors=True)
         if mlf:
             mlf.log_metrics({"cv_macro_f1_mean": summary["macro_f1"]["mean"], "cv_macro_f1_std": summary["macro_f1"]["std"],
                              "cv_accuracy_mean": summary["accuracy"]["mean"], "cv_top3_mean": summary["top3_accuracy"]["mean"],

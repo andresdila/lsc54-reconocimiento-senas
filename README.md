@@ -4,28 +4,40 @@ Proyecto integrador — Técnicas Avanzadas de Modelado, Maestría en Analítica
 
 **Equipo:** Andrés Díaz · Lorena Valero · Jorge Anaya · Sabrina Miranda
 
-**Pregunta experimental (borrador):** bajo una partición independiente del señante, ¿un modelo secuencial (LSTM/GRU) sobre landmarks de MediaPipe mejora el macro-F1 frente a un baseline clásico sobre estadísticas de los landmarks, y a qué costo computacional?
+**Pregunta experimental:** bajo una partición independiente del señante, ¿un modelo secuencial (LSTM/GRU) sobre landmarks de MediaPipe mejora el macro-F1 frente a un baseline clásico sobre estadísticas de los landmarks, y a qué costo computacional?
 
-> Estado: Entrega 1 (plan experimental) en construcción.
+> Estado: Entrega 1 (plan experimental y línea base) en `reports/e1_plan/`.
 
 ## Reproducir
 
 ```bash
-# 1. Entorno (Python 3.11 o 3.12)
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+# 1. Entorno (Python 3.11; MediaPipe 0.10.21 no funciona con 3.13)
+conda create -n lsc54 python=3.11 -y      # Windows: usar "Anaconda Prompt"
+conda activate lsc54
 pip install -r requirements.txt
 
 # 2. Datos: descarga (~0,97 GB), verifica MD5, deduplica, extrae y genera el inventario
 python scripts/download_data.py
+python scripts/make_split.py --check-only   # confirma que la partición v1 se reproduce
 
-# 3. Pruebas
+# 3. Landmarks de MediaPipe (1.740 videos; ~45 min con 2 procesos)
+python scripts/extract_landmarks.py --workers 2
+
+# 4. Línea base en validación cruzada por señante (7 folds de dev)
+python scripts/train_baseline.py --model dummy_majority
+python scripts/train_baseline.py --model dummy_prior
+python scripts/train_baseline.py --model logreg
+
+# 5. Pruebas
 pytest -q
 ```
+
+El test bloqueado (4 señantes) **no** se usa en estas ejecuciones; solo se evalúa una vez al final con `--final-test`.
 
 Los datos **no** se versionan. `scripts/download_data.py` los obtiene de la fuente oficial y deja:
 - `data/raw/videos/<sesión>/<señante>/<seña>/<rep>.avi` (ignorado por Git)
 - `data/inventory/lsc54_v4_inventory.csv` + `.audit.json` (versionados: evidencia de auditoría)
+- `data/processed/landmarks/<video_id>.npy` (ignorado por Git) y `data/inventory/landmarks_audit.csv` (versionado)
 
 ## Partición (v1, fijada antes de modelar)
 
@@ -46,6 +58,10 @@ splits/       asignación señante → partición (versionada)
 reports/      informes LaTeX por entrega (e1_plan, e2_avance, e3_final)
 notebooks/    exploración y comunicación
 ```
+
+## Forma de trabajo
+
+Nadie sube cambios directamente a `main`: cada integrante trabaja en su rama (`nombre/tarea`), abre un Pull Request y otra persona del equipo lo revisa antes de unirlo.
 
 ## Datos y licencia
 

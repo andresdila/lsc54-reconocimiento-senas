@@ -1,0 +1,21 @@
+{
+  "model": "logreg",
+  "variant": null,
+  "max_abs": null,
+  "seed": 2026,
+  "split_version": "v1",
+  "n_features": 493,
+  "expected_features": 493,
+  "git_commit": "9431af2a2c2c93d4b86673821d22e24d310a57e0",
+  "git_dirty": false,
+  "python": "3.11.17",
+  "sklearn": "1.9.1",
+  "numpy": "1.26.4",
+  "n_train": 1359,
+  "n_test": 381,
+  "accuracy": 0.6692913385826772,
+  "macro_f1": 0.6854862463958441,
+  "top3_accuracy": 0.8293963254593176,
+  "fit_seconds": 0.8836308000027202,
+  "predict_ms_per_video": 0.010229658770553396
+}

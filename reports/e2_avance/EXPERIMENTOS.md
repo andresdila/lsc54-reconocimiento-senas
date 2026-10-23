@@ -35,3 +35,22 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db   # opcional: explorar los run
 
 Resultados por experimento en `runs/<nombre>/` (`summary.json`, `curves.csv`, `oof.csv`);
 tabla consolidada en `tabla_experimentos.csv`; figuras en `figures/`.
+
+## Ejecución y trazabilidad
+
+Los 14 experimentos se ejecutaron en el PC de Lorena Valero (Windows, CPU, Python 3.11.17,
+PyTorch 2.14.1+cpu) sobre el commit `bbbc4a4`, entre el 20 y el 22 de octubre de 2026. Cada
+`runs/<nombre>/summary.json` registra configuración, commit, versiones y métricas por fold.
+
+- `git_dirty: true` en `lstm`, `sin_ncuadros`, `pesos_clase`, `sin_mascara` y `sin_interpolacion`:
+  el repositorio se había clonado en Linux y, en Windows, Git reportaba como cambio el bit de
+  permisos de ejecución (`core.filemode`). El contenido de `src/`, `scripts/`, `configs/` y
+  `splits/` es idéntico al commit (`git -c core.filemode=false status` sin cambios). Tras fijar
+  `core.filemode=false`, las 9 corridas siguientes registran `git_dirty: false`.
+- El tiempo de ajuste de `base` (427 s por fold) está inflado: corrió con el modo de ahorro de
+  batería activo. Para el costo se usa el de las corridas con la misma arquitectura (~183 s por fold).
+- Verificación de reproducibilidad: el mismo `base` ejecutado en otra máquina (Linux, Python 3.13)
+  dio macro-F1 0,808 ± 0,079 frente a 0,811 ± 0,079 aquí (diferencias por fold ≤ 0,03).
+
+Resultados consolidados: `tabla_experimentos.csv`, `decision_base.json` (regla de decisión del
+plan con IC por remuestreo de señantes) y `figures/`.

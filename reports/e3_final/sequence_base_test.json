@@ -1,0 +1,63 @@
+{
+  "name": "base",
+  "overrides": [],
+  "config": {
+    "data": {
+      "n_frames": 32,
+      "max_gap": 5,
+      "max_abs": 6.0,
+      "use_n_frames": true,
+      "use_mask": true
+    },
+    "augment": {
+      "enabled": true,
+      "crop": 0.1,
+      "scale": 0.1,
+      "rot_deg": 10.0,
+      "noise": 0.01
+    },
+    "model": {
+      "encoder": "gru",
+      "d_model": 128,
+      "hidden": 128,
+      "layers": 2,
+      "dropout": 0.3,
+      "rnn_dropout": 0.1
+    },
+    "train": {
+      "optimizer": "adamw",
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "batch_size": 32,
+      "epochs": 80,
+      "warmup_epochs": 5,
+      "grad_clip": 1.0,
+      "label_smoothing": 0.0,
+      "class_weights": false
+    }
+  },
+  "seed": 2026,
+  "split_version": "v1",
+  "git_commit": "9431af2a2c2c93d4b86673821d22e24d310a57e0",
+  "git_dirty": false,
+  "python": "3.11.17",
+  "torch": "2.14.1+cpu",
+  "sklearn": "1.9.1",
+  "numpy": "1.26.4",
+  "threads": 8,
+  "n_params": 552023,
+  "n_train": 1359,
+  "n_test": 381,
+  "accuracy": 0.868766404199475,
+  "macro_f1": 0.8812039191371098,
+  "top3_accuracy": 0.9553805774278216,
+  "fit_seconds": 226.68875720002688,
+  "predict_ms_per_video": 0.39154776904287103,
+  "predict_ms_single_video": 6.801506000338122,
+  "per_signer_macro_f1": {
+    "S2-01": 0.9012181616832778,
+    "S2-03": 0.9235880398671095,
+    "S2-29": 0.8189342403628117,
+    "S2-31": 0.6868583797155227
+  }
+}

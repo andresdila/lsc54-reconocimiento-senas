@@ -54,3 +54,23 @@ PyTorch 2.14.1+cpu) sobre el commit `bbbc4a4`, entre el 20 y el 22 de octubre de
 
 Resultados consolidados: `tabla_experimentos.csv`, `decision_base.json` (regla de decisión del
 plan con IC por remuestreo de señantes) y `figures/`.
+
+### Identificadores de commit tras reescribir mensajes
+
+El 22 de octubre de 2026, antes de publicar las ramas en GitHub, se reescribieron **solo los mensajes**
+de los commits de las Entregas 1 y 2 (el contenido no cambió). Por eso los `summary.json` de los 14
+experimentos registran `git_commit: bbbc4a4…`, que ya no existe en el historial: corresponde al commit
+**`dbbe611`** ("run_experiments.py (multiplataforma)…"), con el mismo árbol de archivos
+`bd4a93cd29c08cd5ef53892fe5a4e1b53d6e1133` (`git rev-parse dbbe611^{tree}`).
+
+| Antes | Ahora | Commit |
+|---|---|---|
+| `b97ac92` | `4134055` | Entrega 1: extracción de landmarks, línea base y resultados |
+| `1f8bff0` | `65749d5` | Entrega 2: modelo secuencial |
+| `2d5dcf8` | `f52f2f9` | MLflow con SQLite; script de comparación |
+| `d8944b5` | `8b94ed7` | Reanudación por fold |
+| `3ed151b` | `4509dca` | Protocolo de experimentos |
+| `bbbc4a4` | `dbbe611` | run_experiments.py — **código con el que corrieron los 14 experimentos** |
+| `a2d17c8` | `fc12bc0` | Resultados de los 14 experimentos |
+
+Las evaluaciones del test bloqueado (Entrega 3) se hicieron después y registran el commit vigente `9431af2`.

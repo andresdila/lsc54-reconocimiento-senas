@@ -1,0 +1,173 @@
+{
+  "model": "dummy_majority",
+  "variant": null,
+  "max_abs": null,
+  "seed": 2026,
+  "split_version": "v1",
+  "n_features": 1,
+  "expected_features": null,
+  "git_commit": "1b756843088c95d61a47993789934379381b0469",
+  "git_dirty": true,
+  "python": "3.11.17",
+  "sklearn": "1.9.1",
+  "numpy": "1.26.4",
+  "folds": [
+    {
+      "fold": 1,
+      "n_train": 1167,
+      "n_val": 192,
+      "accuracy": 0.03125,
+      "macro_f1": 0.0014094432699083862,
+      "top3_accuracy": 0.09375,
+      "fit_seconds": 0.006606712000120751,
+      "predict_ms_per_video": 0.0002860364579267601
+    },
+    {
+      "fold": 2,
+      "n_train": 1167,
+      "n_val": 192,
+      "accuracy": 0.03125,
+      "macro_f1": 0.0014094432699083862,
+      "top3_accuracy": 0.09375,
+      "fit_seconds": 0.0004320200000620389,
+      "predict_ms_per_video": 0.00018869270945742755
+    },
+    {
+      "fold": 3,
+      "n_train": 1167,
+      "n_val": 192,
+      "accuracy": 0.03125,
+      "macro_f1": 0.0014094432699083862,
+      "top3_accuracy": 0.09375,
+      "fit_seconds": 0.00034661700010474306,
+      "predict_ms_per_video": 0.00018308333219844522
+    },
+    {
+      "fold": 4,
+      "n_train": 1167,
+      "n_val": 192,
+      "accuracy": 0.03125,
+      "macro_f1": 0.0014094432699083862,
+      "top3_accuracy": 0.09375,
+      "fit_seconds": 0.00034376699977656244,
+      "predict_ms_per_video": 0.00017010937606679968
+    },
+    {
+      "fold": 5,
+      "n_train": 1153,
+      "n_val": 206,
+      "accuracy": 0.03398058252427184,
+      "macro_f1": 0.0015285511518724753,
+      "top3_accuracy": 0.09223300970873786,
+      "fit_seconds": 0.0003339830000186339,
+      "predict_ms_per_video": 0.0001429514566870707
+    },
+    {
+      "fold": 6,
+      "n_train": 1167,
+      "n_val": 192,
+      "accuracy": 0.03125,
+      "macro_f1": 0.0014094432699083862,
+      "top3_accuracy": 0.09375,
+      "fit_seconds": 0.0003569949999473465,
+      "predict_ms_per_video": 0.00016664062485460818
+    },
+    {
+      "fold": 7,
+      "n_train": 1166,
+      "n_val": 193,
+      "accuracy": 0.031088082901554404,
+      "macro_f1": 0.001402360640411359,
+      "top3_accuracy": 0.09326424870466321,
+      "fit_seconds": 0.0003395789999558474,
+      "predict_ms_per_video": 0.00015126943017942397
+    }
+  ],
+  "summary": {
+    "accuracy": {
+      "mean": 0.031616952203689465,
+      "std": 0.0010440083516651865
+    },
+    "macro_f1": {
+      "mean": 0.0014254468774036809,
+      "std": 4.554126886045116e-05
+    },
+    "top3_accuracy": {
+      "mean": 0.09346389405905729,
+      "std": 0.0005721622145577799
+    },
+    "fit_seconds": {
+      "mean": 0.0012513818571408461,
+      "std": 0.0023617158992535166
+    },
+    "predict_ms_per_video": {
+      "mean": 0.00018411191248150505,
+      "std": 4.77576927920347e-05
+    }
+  },
+  "pooled_oof": {
+    "macro_f1": 0.0027000038824397253,
+    "accuracy": 0.03164091243561442
+  },
+  "per_signer_macro_f1": {
+    "S2-17": 0.0012656225280809998,
+    "S2-19": 0.0010570824524312897,
+    "S2-21": 0.0010491344640671445,
+    "S2-22": 0.0010570824524312897,
+    "S2-23": 0.0010570824524312897,
+    "S2-24": 0.0010570824524312897,
+    "S2-25": 0.0010570824524312897,
+    "S2-26": 0.004329004329004329,
+    "S2-27": 0.004329004329004329,
+    "S2-28": 0.004329004329004329,
+    "S2-30": 0.004329004329004329,
+    "S2-32": 0.004329004329004329,
+    "S2-33": 0.004329004329004329,
+    "S2-34": 0.004329004329004329
+  },
+  "per_class_f1_pooled": {
+    "apoyar": 0.0,
+    "ayudar": 0.0,
+    "bano": 0.0,
+    "bien": 0.0,
+    "bienvenido": 0.0,
+    "buenas_noches": 0.06010016694490818,
+    "buenas_tardes": 0.0,
+    "buenos_dias": 0.0,
+    "chao": 0.0,
+    "cinco": 0.0,
+    "como_esta": 0.0,
+    "con_gusto": 0.0,
+    "cuatro": 0.0,
+    "de_nada": 0.0,
+    "diez": 0.056,
+    "dos": 0.0,
+    "esperar": 0.0,
+    "excelente": 0.0,
+    "gracias": 0.0,
+    "hola": 0.0,
+    "invitar": 0.0,
+    "lo_siento": 0.0,
+    "mal": 0.0,
+    "mas_o_menos": 0.0,
+    "muchas_gracias": 0.0,
+    "muy_bien": 0.0,
+    "muy_mal": 0.0,
+    "necesitar": 0.0,
+    "no": 0.0,
+    "nueve": 0.0,
+    "ocho": 0.0,
+    "perdon": 0.0,
+    "perfecto": 0.0,
+    "permiso": 0.0,
+    "por_favor": 0.0,
+    "presentar": 0.0,
+    "seis": 0.0,
+    "sentarse": 0.0,
+    "si": 0.0,
+    "siete": 0.0,
+    "tranquilo": 0.0,
+    "tres": 0.0,
+    "uno": 0.0
+  }
+}

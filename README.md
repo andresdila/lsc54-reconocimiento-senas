@@ -28,7 +28,13 @@ python scripts/train_baseline.py --model dummy_majority
 python scripts/train_baseline.py --model dummy_prior
 python scripts/train_baseline.py --model logreg
 
-# 5. Pruebas
+# 5. Modelo secuencial (Entrega 2): BiGRU y experimentos de un factor a la vez
+python scripts/train_sequence.py --name base             # configs/model.yaml (~35 min en CPU, 7 folds)
+python scripts/run_experiments.py --list                 # batería completa (reports/e2_avance/EXPERIMENTOS.md)
+python scripts/run_experiments.py                        # corre todos y al final la comparación
+python scripts/compare_models.py --candidate base        # tabla, regla de decisión, IC y figuras
+
+# 6. Pruebas
 pytest -q
 ```
 

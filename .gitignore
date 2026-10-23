@@ -9,6 +9,7 @@ data/processed/
 # Resultados pesados
 outputs/
 mlruns/
+mlflow.db
 *.pt
 *.ckpt
 

@@ -1,0 +1,16 @@
+# Versiones exactas del entorno en que se verificó la reproducción (Python 3.11.17).
+# Instalar con: pip install -r requirements.lock
+# Las corridas de las entregas usaron las mismas versiones de torch, scikit-learn, numpy y mediapipe.
+mediapipe==0.10.21
+opencv-contrib-python==4.11.0.86
+torch==2.14.1
+numpy==1.26.4
+pandas==3.0.6
+pyarrow==25.0.1
+scikit-learn==1.9.1
+PyYAML==6.0.3
+requests==2.34.2
+tqdm==4.70.1
+mlflow==3.17.2
+matplotlib==3.11.2
+pytest==9.1.1

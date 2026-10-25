@@ -86,7 +86,7 @@ La BiGRU mejora en los 7 folds, con diferencia media de +0,263 (IC 95 % por remu
 
 **Errores en test:** 50 de 381 videos (13 %). Diez de las 43 clases tienen F1 = 1,0. La clase más difícil es *seis* (F1 = 0,375). Los números son el 31 % de los videos de test pero el 54 % de los errores (tasa de error de 22,5 % frente a 8,8 % en cortesía), y 20 de esos 27 errores son confusiones entre números. Las confusiones más frecuentes son *seis → uno* (6 videos), *bien → por favor* (3), *cuatro → tres* (3), *nueve → ocho* (2) y *ocho → siete* (2). En validación cruzada el F1 medio de los números es 0,709 frente a 0,849 de las expresiones de cortesía.
 
-**Ablaciones (un factor a la vez, macro-F1 en CV):** la elección del optimizador pesa más que cualquier otra decisión (Adam con L2 acoplado 0,599; SGD 0,635); sin aumentos 0,771; LSTM 0,754; sin máscara 0,794; sin log(n_frames) 0,791. Las variantes que superan a la base (Conv1D 0,828; weight decay 0,1 y sin interpolación 0,819) lo hacen por menos de 0,02 con intervalos que incluyen el cero, por lo que **no se seleccionaron** (evitar sesgo de selección).
+**Ablaciones (un factor a la vez, macro-F1 en CV):** con la tasa y el weight decay de la base sin reajustar, Adam con L2 acoplado (0,599) y SGD (0,635) subajustan (macro-F1 de entrenamiento de 0,79 a 0,80 en la época 80), lo que describe su comportamiento con esa configuración y no una superioridad general de AdamW; sin aumentos 0,771; LSTM 0,754; sin máscara 0,794; sin log(n_frames) 0,791. Las variantes que superan a la base (Conv1D 0,828; weight decay 0,1 y sin interpolación 0,819) lo hacen por menos de 0,02 con intervalos que incluyen el cero, por lo que **no se seleccionaron** (evitar sesgo de selección).
 
 ## 8. Consideraciones éticas, riesgos y limitaciones
 
@@ -95,8 +95,9 @@ La BiGRU mejora en los 7 folds, con diferencia media de +0,263 (IC 95 % por remu
 | Representatividad: 18 señantes sin metadatos, 4 en test | Se reporta el desempeño por señante; las conclusiones se limitan a este grupo |
 | Fuga de identidad entre particiones | Controlada (S1 excluido, partición por señante, pruebas automáticas con fuga plantada) |
 | Detección desigual de MediaPipe | Medida y reportada; se recomienda avisar al usuario cuando sea baja |
-| Atajos no lingüísticos (duración, resolución, detección) | Ablaciones sin n_frames (−0,021) y sin máscara (−0,017): no son atajos dominantes |
-| Desbalance y cobertura (22 clases con solo 9 señantes) | Macro-F1 como métrica; pesos de clase sin efecto (−0,001) |
+| Atajos no lingüísticos (duración, resolución, detección) | Ablaciones sin n_frames (−0,020) y sin máscara (−0,016), diferencias sobre predicciones agrupadas: no son atajos dominantes |
+| Desbalance y cobertura (22 clases con solo 9 señantes) | Macro-F1 como métrica; pesos de clase sin efecto (−0,002) |
+| Sobreconfianza (ECE 0,114; confianza media 0,925 frente a exactitud 0,812 en CV) | Pendiente: recalibrar con escalado de temperatura antes de definir un umbral de abstención |
 | Privacidad | Rostros pixelados por los autores; no se redistribuyen videos; sin landmarks faciales |
 | Uso indebido o sobreafirmación | No presentar como traductor; validar con la comunidad sorda y docentes de LSC |
 
@@ -105,10 +106,10 @@ La BiGRU mejora en los 7 folds, con diferencia media de +0,263 (IC 95 % por remu
 1. **Pocas personas.** Con 18 señantes y 4 en test no hay evidencia de generalización a otras poblaciones, cámaras o condiciones de iluminación.
 2. **El test es optimista.** Los señantes de test tienen mejor detección de manos que los de desarrollo (0,73 frente a 0,57). La cifra de validación cruzada (0,811 ± 0,079) es la mejor referencia de lo que cabe esperar.
 3. **Alcance léxico.** 43 señas aisladas de una sola campaña; reconocer vocabulario no equivale a comprender la lengua (gramática, expresión facial, uso del espacio).
-4. **Comparación acotada.** La línea base no se afinó (C = 1 fijo) y no se probaron otros clasificadores clásicos (SVM, bosques, boosting) sobre las mismas variables.
+4. **Comparación acotada.** La línea base se fijó con C = 1; en un análisis de sensibilidad con los mismos folds (`scripts/tune_baseline.py`), la mejor opción entre regresión logística con C de 0,01 a 10, bosque aleatorio y SVM RBF alcanza 0,554 ± 0,163, de modo que la brecha con la BiGRU se mantiene en 0,26. No se probó gradient boosting.
 5. **Incertidumbre.** Algunos folds validan clases con un único señante; los F1 por clase en test (6 a 13 videos) son indicativos y no concluyentes.
 
-**Recomendaciones:** usar top-3 y un umbral de confianza para abstenerse; medir la detección por usuario; validar con la comunidad sorda y docentes de LSC antes de cualquier uso real; reentrenar con más señantes y condiciones.
+**Recomendaciones:** usar top-3 y, tras recalibrar las probabilidades, un umbral de confianza para abstenerse; medir la detección por usuario; validar con la comunidad sorda y docentes de LSC antes de cualquier uso real; reentrenar con más señantes y condiciones.
 
 ---
 

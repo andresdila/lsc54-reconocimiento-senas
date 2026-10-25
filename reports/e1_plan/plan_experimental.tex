@@ -1,49 +1,56 @@
-% Entrega 1 - Plan experimental. Compilar con: xelatex plan_experimental.tex (dos veces)
-% Entrega 1 - Plan experimental (estilo artículo, Times 12 pt, solo negro, sin líneas).
+% Entrega 1 - Plan experimental (formato de artículo científico).
 % Compilar con: xelatex plan_experimental.tex (dos veces)
-\documentclass[12pt,a4paper]{article}
-\usepackage[margin=2.1cm]{geometry}
+\documentclass[11pt,a4paper]{article}
+\usepackage[top=2.4cm,bottom=2.4cm,left=2.3cm,right=2.3cm,headsep=0.8cm]{geometry}
 \usepackage{fontspec}
-% Liberation Serif es métricamente idéntica a Times New Roman; si se compila en una
-% máquina con Times New Roman instalada, basta cambiar el nombre de la fuente.
+% Liberation Serif es métricamente idéntica a Times New Roman.
 \setmainfont{Liberation Serif}
 \usepackage{babel}
 \babelprovide[import,main]{spanish}
 \usepackage{microtype}
-\usepackage{tabularx,array}
+\usepackage{tabularx,array,booktabs}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{caption}
+\usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{rm}
 
-\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.5em}{}
-\titlespacing*{\section}{0pt}{8pt}{2pt}
-\setlength{\parskip}{0pt}
-\setlength{\parindent}{1.25em}
-\setlist{itemsep=0pt,topsep=2pt,parsep=0pt,leftmargin=1.5em}
-\captionsetup{font=normalsize,labelfont=bf,skip=3pt,justification=raggedright,singlelinecheck=false}
-\renewcommand{\arraystretch}{1.08}
-\pagestyle{plain}
+\AtBeginDocument{\renewcommand{\tablename}{Tabla}}
+\linespread{1.04}
+\setlength{\parskip}{3pt}
+\setlength{\parindent}{1.2em}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{5pt}
+\setlist{itemsep=1pt,topsep=3pt,parsep=0pt,leftmargin=1.5em}
+\captionsetup{font=small,labelfont=bf,labelsep=period,skip=4pt,justification=justified,singlelinecheck=false}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
 \newcommand{\code}[1]{\textit{#1}}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \setlength{\emergencystretch}{2em}
 
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Técnicas Avanzadas de Modelado · Entrega 1}}
+\fancyhead[R]{\small\textit{Reconocimiento de señas aisladas LSC-54}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+
 \begin{document}
 
+\thispagestyle{plain}
 \begin{center}
-{\bfseries Reconocimiento de señas aisladas de la Lengua de Señas Colombiana (LSC-54):\\ plan experimental, Entrega 1}\\[4pt]
-Andrés Díaz, Lorena Valero, Jorge Anaya y Sabrina Miranda\\
-Maestría en Analítica Aplicada e Inteligencia Artificial, Universidad de La Sabana\\
-Técnicas Avanzadas de Modelado, 2026-II \,·\, Octubre de 2026\\
-\url{https://github.com/andresdila/lsc54-reconocimiento-senas}
+{\Large\bfseries Reconocimiento de señas aisladas de la Lengua de Señas Colombiana\\[3pt] (LSC-54): plan experimental}\\[10pt]
+{\normalsize Andrés Díaz, Lorena Valero, Jorge Anaya y Sabrina Miranda}\\[3pt]
+{\small Maestría en Analítica Aplicada e Inteligencia Artificial, Universidad de La Sabana}\\
+{\small Técnicas Avanzadas de Modelado, 2026-II \,·\, Entrega 1 \,·\, Octubre de 2026}\\[2pt]
+{\small\url{https://github.com/andresdila/lsc54-reconocimiento-senas}}
 \end{center}
-\vspace{-6pt}
-\begin{center}\begin{minipage}{0.92\textwidth}\noindent
-\textbf{Resumen.} Este documento presenta el plan experimental para clasificar 43 señas aisladas de la LSC a partir de landmarks de MediaPipe, evaluando siempre sobre señantes que no participaron en el entrenamiento. Se describen el contexto, el origen y la licencia de los datos, su auditoría inicial, la partición por señante, los riesgos de sesgo, la línea base, las métricas de éxito, la arquitectura candidata, el cronograma y los criterios de reproducibilidad.
-\end{minipage}\end{center}
-
-\vspace{-4pt}
+\vspace{4pt}
+\noindent\rule{\textwidth}{0.4pt}
+\vspace{2pt}
 
 %--------------------------------------------------------------------------------------
 \section{Contexto y alcance del problema}
@@ -66,18 +73,23 @@ LSC-54 fue publicado por Mora-Zarate, Garzón-Castro y Castellanos-Rivillas (202
 
 Con base en el inventario versionado (\code{data/inventory/}), la composición del subconjunto de trabajo es la siguiente.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\textbf{Característica} & \textbf{Valor en el subconjunto S2 (después de excluir duplicados)}\\[2pt]
-Unidad y formato & Un video \code{.avi} por repetición de una seña; 1.740 videos, 671 MB (mediana 290 KB por video, rango 80 KB a 2,0 MB)\\[2pt]
-Clases & 43: 33 de cortesía (1.198 videos) y 10 números (542 videos)\\[2pt]
-Señantes & 18 carpetas: 9 graban las 43 clases (\emph{full}) y 9 graban 21 (11 de cortesía y 10 números, \emph{partial})\\[2pt]
-Videos por clase & 26 a 57. Las 21 clases comunes tienen entre 51 y 57; las 22 restantes solo las graban 9 señantes y tienen entre 26 y 30\\[2pt]
-Repeticiones & 1.710 videos con índice de repetición 0 a 2; 30 con índice 3 a 5\\[2pt]
-Resolución y velocidad & 30 fps en todos; 640×360 en la mayoría y 640×480 en S2-21, S2-24 y S2-25 (el artículo reporta 1080p a 30 fps)\\[2pt]
-\end{tabularx}
 \caption{Composición del subconjunto de trabajo (cifras calculadas del inventario versionado).}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Característica} & \textbf{Valor en el subconjunto S2 (después de excluir duplicados)}\\
+\midrule
+Unidad y formato & Un video \code{.avi} por repetición de una seña; 1.740 videos, 671 MB (mediana 290 KB por video, rango 80 KB a 2,0 MB)\\\addlinespace[3pt]
+Clases & 43: 33 de cortesía (1.198 videos) y 10 números (542 videos)\\\addlinespace[3pt]
+Señantes & 18 carpetas: 9 graban las 43 clases (\emph{full}) y 9 graban 21 (11 de cortesía y 10 números, \emph{partial})\\\addlinespace[3pt]
+Videos por clase & 26 a 57. Las 21 clases comunes tienen entre 51 y 57; las 22 restantes solo las graban 9 señantes y tienen entre 26 y 30\\\addlinespace[3pt]
+Repeticiones & 1.710 videos con índice de repetición 0 a 2; 30 con índice 3 a 5\\\addlinespace[3pt]
+Resolución y velocidad & 30 fps en todos; 640×360 en la mayoría y 640×480 en S2-21, S2-24 y S2-25 (el artículo reporta 1080p a 30 fps)\\
+\bottomrule
+\end{tabularx}
 \end{table}
 
 En cuanto a las limitaciones, es necesario señalarlas con la misma claridad con la que se describen las ventajas, siguiendo la lógica de las hojas de datos propuestas por Gebru et al. (2021). Primero, el material disponible no documenta edad, sexo, tono de piel ni mano dominante de los señantes, y tampoco precisa si son personas sordas, oyentes o intérpretes. Segundo, el conjunto contiene 38 identidades de señante (20 en S1 y 18 en S2, contadas por carpeta) frente a 22 participantes reportados, de modo que la correspondencia entre carpetas y personas no es verificable y algunas carpetas de campañas distintas probablemente son la misma persona. Tercero, el artículo reporta una grabación a 1080p y 30 cuadros por segundo, pero los videos publicados están reducidos: todos a 30 fps, la mayoría a 640×360 y tres señantes (S2-21, S2-24 y S2-25) a 640×480. Esta heterogeneidad de resolución afecta el preprocesamiento (sección 5). Por último, el vocabulario es pequeño y de señas aisladas, lo cual limita cualquier afirmación sobre la lengua en uso real.
@@ -89,21 +101,26 @@ La auditoría se ejecuta con \code{download\_data.py}, que deja como evidencia v
 
 \textbf{Videos.} Los tres archivos comprimidos se validan por MD5. El inventario registra 2.880 videos en total, de los cuales se excluyen 30 que corresponden a una copia de la carpeta de números dentro de \code{Videos Courtesy.zip} (29 de 30 archivos idénticos por CRC32 y tamaño; se conserva \code{Videos Numbers.zip} como fuente canónica). Tras la exclusión quedan 2.850 videos, 54 clases y 38 identidades de señante (20 en S1 y 18 en S2), sin duplicados exactos por sha256 y con identificadores únicos. Así mismo, tres carpetas con nombres mal escritos se normalizan de forma explícita en la configuración (\code{dies}→\code{diez}, \code{denada}→\code{de\_nada}, \code{maso\_menos}→\code{mas\_o\_menos}), de modo que la corrección queda auditada y no oculta en el código. Los hallazgos estructurales más relevantes para el diseño son el desbalance entre clases (relación de 2,2 a 1 entre la más y la menos frecuente) y la cobertura desigual de señantes por clase (9 frente a 18).
 
-\textbf{Detección de landmarks.} La extracción procesó los 1.740 videos (113.658 cuadros) y registró por video, en \code{landmarks\_audit.csv}, resolución, cuadros por segundo, número de cuadros y tasa de detección de pose y de cada mano. Ningún video quedó vacío y la pose se detecta en el 99,5\,\% de los cuadros; en cambio, la mano más activa aparece en promedio en el 60\,\% de ellos, posiblemente porque las manos en reposo no se detectan. El 32\,\% de los videos queda bajo el umbral del 50\,\%; excluirlos eliminaría un tercio de los datos, por lo que se conservan y la tasa de detección se mantiene como variable y como eje del análisis de errores. La detección varía de forma marcada entre señantes, de 0,46 (S2-19) a 0,97 (S2-32), y es mayor en los cuatro señantes del test (0,73) que en dev (0,57); por tanto, el desempeño sobre el test podría resultar optimista, y así se reportará.
+\textbf{Detección de landmarks.} La extracción procesó los 1.740 videos (113.658 cuadros) y registró por video, en \code{landmarks\_audit.csv}, resolución, cuadros por segundo, número de cuadros y tasa de detección de pose y de cada mano. Ningún video quedó vacío y la pose se detecta en el 99,5\,\% de los cuadros; en cambio, la mano más activa aparece en promedio en el 60\,\% de ellos, posiblemente porque las manos en reposo, al inicio y al final de cada video, no se detectan. El 32\,\% de los videos queda bajo el umbral propuesto (menos del 50\,\% de los cuadros con la mano más activa); excluirlos eliminaría un tercio de los datos, por lo que se conservan y la tasa de detección se mantiene como variable y como eje del análisis de errores. La detección varía de forma marcada entre señantes, de 0,46 (S2-19) a 0,97 (S2-32), y es mayor en los cuatro señantes del test (0,73) que en dev (0,57); por tanto, el desempeño sobre el test podría resultar optimista, y así se reportará.
 
 %--------------------------------------------------------------------------------------
 \section{Esquema de partición}
 
 La partición v1 se decidió y se versionó \emph{antes} de extraer landmarks o entrenar cualquier modelo, y se hace sobre señantes, nunca sobre videos. La razón es que las repeticiones de una misma persona se parecen mucho entre sí, de modo que una división aleatoria por video pondría a la misma persona a ambos lados y mediría memorización de la identidad en lugar de generalización a personas nuevas (Scikit-learn Developers, s.~f.; Zinkevich, s.~f.). Por la misma razón se excluyó S1: su numeración de carpetas es independiente de la de S2, y no hay forma de saber si una carpeta de S1 y una de S2 son la misma persona.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
+\caption{Partición v1 por señante.}
+\small
+\renewcommand{\arraystretch}{1.22}
 \begin{tabularx}{\textwidth}{@{}lccY@{}}
-\textbf{Partición} & \textbf{Señantes} & \textbf{Videos} & \textbf{Composición}\\[2pt]
+\toprule
+\textbf{Partición} & \textbf{Señantes} & \textbf{Videos} & \textbf{Composición}\\
+\midrule
 Dev (folds 1 a 7) & 14 & 1.359 & 7 folds de 192 a 206 videos; cada fold valida con un señante \emph{full} y uno \emph{partial}\\
 Test bloqueado & 4 & 381 & S2-01, S2-03 (\emph{full}), S2-29 y S2-31 (\emph{partial}); semilla 2026\\
+\bottomrule
 \end{tabularx}
-\caption{Partición v1 por señante.}
 \end{table}
 
 El test bloqueado reúne 381 videos (21,9\,\%) y cada fold de validación tiene entre 192 y 206. La estratificación por tipo de cobertura (\emph{full} o \emph{partial}) garantiza que las 43 clases estén presentes en el test y en cada fold; sin ella, un fold podría quedar sin las 22 clases que solo graban los señantes \emph{full}. Esta decisión tiene una consecuencia que debe tenerse presente: en cada fold esas 22 clases son validadas por un único señante (unos tres videos) y, en el test, por dos (6 a 13 videos por clase). Por tanto, el macro-F1 por fold es ruidoso, y se reportará también sobre las predicciones fuera de muestra de los siete folds agrupadas.
@@ -113,47 +130,59 @@ Las medidas anti-fuga son las siguientes: (i) \code{tests/test\_split.py} verifi
 %--------------------------------------------------------------------------------------
 \section{Preprocesamiento}
 
-Cada video pasa por MediaPipe Holistic (versión 0.10.21, la misma de los autores) y de cada cuadro se conservan las coordenadas (\emph{x}, \emph{y}) de siete puntos de pose del tren superior (nariz, hombros, codos y muñecas) y de los 21 puntos de cada mano, es decir, 98 valores por cuadro. No se usan landmarks faciales, tanto por parsimonia como para reducir la identificabilidad de las personas. Un detalle importante es que MediaPipe entrega \emph{x} normalizada por el ancho e \emph{y} por el alto de la imagen, de modo que con dos resoluciones distintas (640×360 y 640×480) la forma de una misma seña queda deformada de manera diferente según el señante. Por esta razón las coordenadas se convierten a píxeles (\emph{x}·ancho, \emph{y}·alto) antes de normalizar; de lo contrario, el modelo podría aprender \emph{qué cámara} se usó en lugar de \emph{qué seña} se hizo. Después, las coordenadas se normalizan por cuadro tomando como origen el punto medio de los hombros y como escala la distancia entre ellos, lo que vuelve la representación invariante a la posición y a la distancia a la cámara. Cuando una mano no se detecta, sus valores quedan como ausentes y la tasa de detección se conserva como información, en vez de interpolarse en silencio.
+Cada video pasa por MediaPipe Holistic (versión 0.10.21, la misma de los autores) y de cada cuadro se conservan las coordenadas (\emph{x}, \emph{y}) de siete puntos de pose del tren superior (nariz, hombros, codos y muñecas) y de los 21 puntos de cada mano, es decir, 98 valores por cuadro. No se usan landmarks faciales, tanto por parsimonia como para reducir la identificabilidad de las personas.
+
+MediaPipe entrega \emph{x} normalizada por el ancho e \emph{y} por el alto de la imagen. Como los videos tienen dos resoluciones (640×360 y 640×480), esa normalización deforma la forma de la seña de manera distinta según el señante. Por esta razón, antes de normalizar, las coordenadas se convierten a píxeles (\emph{x}·ancho, \emph{y}·alto); de lo contrario, el modelo podría aprender \emph{qué cámara} se usó en lugar de \emph{qué seña} se hizo. Una vez en píxeles, cada cuadro se normaliza tomando como origen el punto medio de los hombros y como escala la distancia entre ellos, lo que vuelve la representación invariante a la posición y a la distancia a la cámara. Cuando una mano no se detecta, sus valores quedan como ausentes y la tasa de detección se conserva como información.
 
 Para el baseline, cada video se resume en 493 variables: media, desviación, mínimo, máximo y velocidad media absoluta de cada coordenada, la tasa de detección de cada mano y el número de cuadros. Para el modelo secuencial, la serie se remuestrea a 32 cuadros, se completan los vacíos cortos (hasta 5 cuadros) por interpolación lineal, se añade un canal de máscara para los vacíos restantes y se aplican aumentos solo sobre entrenamiento (desplazamiento temporal, escala y rotación pequeñas, ruido gaussiano). No se emplea reflejo horizontal, porque cambiaría la lateralidad de la seña.
 
 %--------------------------------------------------------------------------------------
 \section{Riesgos de sesgo, privacidad y uso indebido}
 
-Para identificar y ordenar los riesgos se toman como guía las funciones \emph{Map}, \emph{Measure} y \emph{Manage} del marco de gestión de riesgos de IA del NIST (2023). El Cuadro 3 resume los más relevantes con la evidencia disponible y la mitigación prevista.
+Para identificar y ordenar los riesgos se toman como guía las funciones \emph{Map}, \emph{Measure} y \emph{Manage} del marco de gestión de riesgos de IA del NIST (2023). La Tabla 3 resume los más relevantes con la evidencia disponible y la mitigación prevista.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.9cm}YY@{}}
-\textbf{Riesgo} & \textbf{Evidencia} & \textbf{Mitigación}\\[3pt]
-Representatividad de los señantes & 18 personas sin metadatos demográficos; no se sabe si son sordas, oyentes o intérpretes & Reportar el desempeño por señante (peor caso y dispersión), no solo el promedio; limitar las conclusiones a este grupo\\[3pt]
-Fuga de identidad & 38 identidades por carpeta (20 en S1, 18 en S2) frente a 22 participantes & Excluir S1; unidad de partición = señante; controles automáticos\\[3pt]
-Detección desigual de MediaPipe & Puede variar con la iluminación, la ropa, las oclusiones y las características de la persona & Auditar la tasa de detección por señante y relacionarla con el error del modelo\\[3pt]
-Atajos no lingüísticos & La duración, la tasa de detección y la resolución (640×360 frente a 640×480) pueden identificar al señante o a la cámara más que a la seña & Convertir a píxeles antes de normalizar; ablación sin \code{n\_frames} ni tasas de detección; revisión de errores por señante\\[3pt]
-Desbalance y cobertura & 26 a 57 videos por clase; 22 clases con solo 9 señantes & Macro-F1 como métrica principal; pesos de clase como ablación; reporte por clase\\[3pt]
-Privacidad & Los videos publicados tienen los rostros pixelados por los autores y están bajo CC BY-NC & No redistribuir videos; versionar solo landmarks e inventario; sin landmarks faciales\\[3pt]
-Uso indebido o sobreafirmación & Señas aisladas no equivalen a la lengua; un error afecta a quien aprende & No presentarlo como traductor ni como sustituto de intérpretes; validar con la comunidad sorda y docentes de LSC antes de cualquier uso real\\[3pt]
-\end{tabularx}
 \caption{Riesgos identificados, evidencia y mitigación.}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.9cm}YY@{}}
+\toprule
+\textbf{Riesgo} & \textbf{Evidencia} & \textbf{Mitigación}\\
+\midrule
+Representatividad de los señantes & 18 personas sin metadatos demográficos; no se sabe si son sordas, oyentes o intérpretes & Reportar el desempeño por señante (peor caso y dispersión), no solo el promedio; limitar las conclusiones a este grupo\\\addlinespace[3pt]
+Fuga de identidad & 38 identidades por carpeta (20 en S1, 18 en S2) frente a 22 participantes & Excluir S1; unidad de partición = señante; controles automáticos\\\addlinespace[3pt]
+Detección desigual de MediaPipe & La mano más activa se detecta en 0,46 a 0,97 de los cuadros según el señante; 0,73 en test frente a 0,57 en dev & Relacionar la tasa de detección con el error del modelo; reportar el test con esta salvedad\\\addlinespace[3pt]
+Atajos no lingüísticos & La duración, la tasa de detección y la resolución (640×360 frente a 640×480) pueden identificar al señante o a la cámara más que a la seña & Convertir a píxeles antes de normalizar; ablación sin \code{n\_frames} ni tasas de detección; revisión de errores por señante\\\addlinespace[3pt]
+Desbalance y cobertura & 26 a 57 videos por clase; 22 clases con solo 9 señantes & Macro-F1 como métrica principal; pesos de clase como ablación; reporte por clase\\\addlinespace[3pt]
+Privacidad & Los videos publicados tienen los rostros pixelados por los autores y están bajo CC BY-NC & No redistribuir videos; versionar solo landmarks e inventario; sin landmarks faciales\\\addlinespace[3pt]
+Uso indebido o sobreafirmación & Señas aisladas no equivalen a la lengua; un error afecta a quien aprende & No presentarlo como traductor ni como sustituto de intérpretes; validar con la comunidad sorda y docentes de LSC antes de cualquier uso real\\
+\bottomrule
+\end{tabularx}
 \end{table}
 
 %--------------------------------------------------------------------------------------
 \section{Línea base implementada y primeras métricas}
 
-Siguiendo la recomendación de comenzar con un modelo sencillo y bien medido antes de complicar el sistema (Zinkevich, s.~f.), la línea base consiste en un \code{Pipeline} de scikit-learn con imputación por mediana, estandarización y regresión logística multinomial (\emph{C} = 1, semilla 2026) sobre las 493 variables descritas. El código está en el repositorio: \code{src/lsc/features/landmarks.py} (representación y estadísticas), \code{scripts/extract\_landmarks.py} (extracción y auditoría de detección) y \code{scripts/train\_baseline.py} (validación cruzada agrupada con los folds de la partición v1). Las pruebas \code{tests/test\_features.py} verifican la invarianza a traslación, escala y resolución, y el manejo de manos ausentes. Además del modelo clásico, el mismo script calcula dos referencias triviales que fijan el piso que cualquier modelo debe superar.
+Siguiendo la recomendación de comenzar con un modelo sencillo y bien medido antes de complicar el sistema (Zinkevich, s.~f.), la línea base consiste en un \code{Pipeline} de scikit-learn con imputación por mediana, estandarización y regresión logística multinomial (\emph{C} = 1, semilla 2026) sobre las 493 variables descritas. El código está en el repositorio: \code{src/lsc/features/landmarks.py} (representación y estadísticas), \code{scripts/extract\_landmarks.py} (extracción y auditoría de detección) y \code{scripts/train\_baseline.py} (validación cruzada agrupada con los folds de la partición v1). Las pruebas \code{tests/test\_features.py} verifican la invarianza a traslación, escala y resolución, y el manejo de manos ausentes. Se elige un modelo clásico sobre resúmenes estadísticos porque responde la pregunta previa a cualquier red profunda, es decir, si la dinámica temporal es necesaria para reconocer la seña o si basta con la distribución de las posiciones. Además, el mismo script calcula dos referencias triviales que fijan el piso que cualquier modelo debe superar.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
+\caption{Línea base en dev (validación cruzada por señante). El azar puro sobre 43 clases da una exactitud de 1/43 ≈ 0,023.}
+\small
+\renewcommand{\arraystretch}{1.22}
 \begin{tabularx}{\textwidth}{@{}lYYY@{}}
+\toprule
 \textbf{Modelo (validación cruzada, 7 folds)} & \textbf{Macro-F1 (media ± d.e.)} & \textbf{Macro-F1 agrupado} & \textbf{Exactitud (media ± d.e.)}\\
+\midrule
 Clase mayoritaria & 0,001 ± 0,000 & 0,003 & 0,032 ± 0,001\\
 Aleatorio según frecuencias & 0,019 ± 0,008 & 0,020 & 0,022 ± 0,008\\
 Regresión logística sobre landmarks & 0,549 ± 0,167 & 0,573 & 0,569 ± 0,150\\
+\bottomrule
 \end{tabularx}
-\caption{Línea base en dev (validación cruzada por señante). El azar puro sobre 43 clases da una exactitud de 1/43 ≈ 0,023.}
 \end{table}
 
-Las cifras completas están en \code{reports/e1\_plan/}; el test bloqueado no se ha evaluado. La regresión logística alcanza un macro-F1 de 0,549, casi treinta veces el de la referencia aleatoria, y una exactitud top-3 de 0,782. Su costo es bajo (1,8 s de ajuste por fold y 0,03 ms de predicción por video), mientras que la extracción con MediaPipe toma unos 2,5 s por video en un núcleo de CPU y domina la latencia. La dispersión entre folds es alta (0,20 a 0,69) y se concentra en el fold 3, cuyo señante S2-19 obtiene 0,11; descartar los cuadros con coordenadas físicamente implausibles apenas lo eleva a 0,15, de modo que la línea base se mantiene tal como fue especificada y la causa se estudiará en el análisis de errores de la Entrega 2.
+La Tabla 4 resume los resultados, cuyas cifras completas están en \code{reports/e1\_plan/}; el test bloqueado no se ha evaluado. La regresión logística alcanza un macro-F1 de 0,549, casi treinta veces el de la referencia aleatoria, y una exactitud top-3 de 0,782, de modo que las estadísticas de los landmarks ya contienen información sustancial sobre la seña; en cambio, el macro-F1 casi nulo de la clase mayoritaria muestra por qué la exactitud sola sería engañosa. Su costo es bajo (1,8 s de ajuste por fold y 0,03 ms de predicción por video), mientras que la extracción con MediaPipe toma unos 2,5 s por video en un núcleo de CPU y domina la latencia; por ser una tarea limitada por CPU, se paralelizó por procesos, y con dos procesos el rendimiento pasó de 28 a 41 cuadros por segundo en una máquina de dos núcleos, una ganancia de 1,5 veces y no de 2, posiblemente por el costo de crear los procesos y cargar el modelo en cada video. La dispersión entre folds es alta (0,20 a 0,69) y se concentra en el fold 3, donde el señante S2-19 obtiene 0,11; descartar los cuadros con coordenadas físicamente implausibles apenas lo eleva a 0,15, de modo que la línea base se mantiene tal como fue especificada y la causa se estudiará en el análisis de errores de la Entrega 2. Por señante, el macro-F1 tiene una mediana de 0,58 y cinco de los catorce señantes de dev quedan por debajo de 0,50. Por clase, los números obtienen un F1 medio de 0,43 frente a 0,61 de las expresiones de cortesía; los más confundidos son seis, siete y uno, que se distinguen sobre todo por la configuración de los dedos, información que los resúmenes por coordenada posiblemente diluyen y que orientará las ablaciones de la Entrega 2.
 
 %--------------------------------------------------------------------------------------
 \section{Métricas de éxito}
@@ -172,18 +201,23 @@ El candidato es una red recurrente bidireccional que recibe la secuencia de 32 c
 %--------------------------------------------------------------------------------------
 \section{Cronograma y roles}
 
-Las tres entregas del curso tienen como plazo el 25 de octubre de 2026, por lo que se fijan cierres internos escalonados; lo completado está respaldado por el historial del repositorio.
+La Entrega 1 vence el 18 de octubre de 2026 y las Entregas 2 y 3, el 25 de octubre; por esta razón, el avance se cierra internamente el 22 de octubre, de modo que queden tres días para el informe final, la presentación y el video. Lo completado está respaldado por el historial del repositorio.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.6cm}Y>{\raggedright\arraybackslash}p{1.6cm}>{\raggedright\arraybackslash}p{2.1cm}@{}}
-\textbf{Fase} & \textbf{Actividades} & \textbf{Cierre} & \textbf{Estado}\\[2pt]
-Preparación & Repositorio, entorno, descarga con MD5, inventario y auditoría de duplicados, partición v1 y pruebas anti-fuga & 17 oct. & Completada\\[2pt]
-Entrega 1 (plan) & Extracción de landmarks, auditoría de detección, línea base con regresión logística, este documento & 20 oct. & Completada\\[2pt]
-Entrega 2 (avance) & BiGRU/LSTM, ajuste de hiperparámetros en dev, ablaciones, análisis por señante y por clase & 23 oct. & Pendiente\\[2pt]
-Entrega 3 (final) & Evaluación única sobre el test bloqueado, análisis de errores y de costo, informe, presentación y video & 25 oct. & Pendiente\\[2pt]
-\end{tabularx}
 \caption{Cronograma por hitos.}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.6cm}Y>{\raggedright\arraybackslash}p{1.6cm}>{\raggedright\arraybackslash}p{2.1cm}@{}}
+\toprule
+\textbf{Fase} & \textbf{Actividades} & \textbf{Cierre} & \textbf{Estado}\\
+\midrule
+Preparación & Repositorio, entorno, descarga con MD5, inventario y auditoría de duplicados, partición v1 y pruebas anti-fuga & 17 oct. & Completada\\\addlinespace[3pt]
+Entrega 1 (plan) & Extracción de landmarks, auditoría de detección, línea base con regresión logística, este documento & 18 oct. & Completada\\\addlinespace[3pt]
+Entrega 2 (avance) & BiGRU/LSTM, ajuste de hiperparámetros en dev, ablaciones, análisis por señante y por clase & 22 oct. & Pendiente\\\addlinespace[3pt]
+Entrega 3 (final) & Evaluación única sobre el test bloqueado, análisis de errores y de costo, informe, presentación y video & 25 oct. & Pendiente\\
+\bottomrule
+\end{tabularx}
 \end{table}
 
 Los \textbf{roles} del equipo son: Andrés Díaz, datos, inventario y partición; Lorena Valero, modelo secuencial y entrenamiento; Jorge Anaya, línea base, métricas y análisis estadístico; y Sabrina Miranda, riesgos de sesgo, documentación y redacción de informes. Cada cambio de código se integra mediante \emph{pull request} con revisión de otra persona del equipo.
@@ -191,12 +225,12 @@ Los \textbf{roles} del equipo son: Andrés Díaz, datos, inventario y partición
 %--------------------------------------------------------------------------------------
 \section{Criterios de reproducibilidad}
 
-Para que cualquier persona pueda repetir el experimento y obtener los mismos resultados se establecen los siguientes criterios. Primero, el entorno es Python 3.11 o 3.12 con dependencias declaradas en \code{requirements.txt} (MediaPipe fijado en 0.10.21) y, tras la primera instalación en ambos sistemas operativos, un archivo de versiones exactas. Segundo, los datos se obtienen con un solo comando, se verifican por MD5 y su inventario con sha256 se versiona como evidencia. Tercero, las decisiones experimentales viven en archivos YAML (\code{configs/}) y no en el código, la semilla es 2026 en todos los componentes aleatorios, y la partición v1 es inmutable: cambiarla exige crear la v2 de forma explícita. Cuarto, cada ejecución guarda en un JSON su configuración, el \emph{commit} de Git y las versiones de las librerías, y el seguimiento de experimentos se hace con MLflow. Por último, las pruebas automáticas (\code{pytest -q}) se ejecutan en cada cambio, y el test bloqueado solo se evalúa una vez, con un script que se niega a repetirlo.
+Para que cualquier persona pueda repetir el experimento y obtener los mismos resultados se establecen los siguientes criterios. Primero, el entorno es Python 3.11 o 3.12 con dependencias declaradas en \code{requirements.txt} (MediaPipe fijado en 0.10.21) y, en la Entrega 2, se agregará un archivo de versiones exactas generado tras instalar el entorno en ambos sistemas operativos. Segundo, los datos se obtienen con un solo comando, se verifican por MD5 y su inventario con sha256 se versiona como evidencia. Tercero, las decisiones experimentales viven en archivos YAML (\code{configs/}) y no en el código, la semilla es 2026 en todos los componentes aleatorios, y la partición v1 es inmutable: cambiarla exige crear la v2 de forma explícita. Cuarto, cada ejecución guarda en un JSON su configuración, el \emph{commit} de Git y las versiones de las librerías; a partir de la Entrega 2, el seguimiento de experimentos se hará con MLflow. Por último, las pruebas automáticas (\code{pytest -q}) se ejecutan en cada cambio, y el test bloqueado solo se evalúa una vez, con un script que se niega a repetirlo.
 
 %--------------------------------------------------------------------------------------
 \section*{Referencias}
-\sloppy
-\setlength{\parskip}{1.5pt}
+\sloppy\footnotesize
+\setlength{\parskip}{2pt}
 \noindent\hangindent=1.2em Cho, K., van Merriënboer, B., Gulcehre, C., Bahdanau, D., Bougares, F., Schwenk, H., y Bengio, Y. (2014). Learning phrase representations using RNN encoder-decoder for statistical machine translation. \emph{arXiv:1406.1078}.\par
 \noindent\hangindent=1.2em Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., y Crawford, K. (2021). Datasheets for datasets. \emph{Communications of the ACM, 64}(12), 86-92. \url{https://doi.org/10.1145/3458723}\par
 \noindent\hangindent=1.2em Hochreiter, S., y Schmidhuber, J. (1997). Long short-term memory. \emph{Neural Computation, 9}(8), 1735-1780.\par

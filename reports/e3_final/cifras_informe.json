@@ -1,0 +1,99 @@
+{
+  "calibration_dev_oof": {
+    "ece_15_bins": 0.11403648002943334,
+    "mean_confidence": 0.9248852647829288,
+    "accuracy": 0.811626195732156,
+    "mean_confidence_when_wrong": 0.7730334262109375,
+    "true_in_top3_when_wrong": 0.59375
+  },
+  "learning_curves_base": {
+    "mean_val_loss_min_epoch": 27,
+    "mean_val_loss_min": 0.8109324957643237,
+    "mean_val_loss_final": 0.9264265085969653,
+    "per_fold_val_loss_min_epoch": {
+      "1": 40,
+      "2": 47,
+      "3": 33,
+      "4": 15,
+      "5": 30,
+      "6": 46,
+      "7": 17
+    },
+    "mean_train_f1_reaches_0.99_epoch": 41,
+    "mean_val_f1_final": 0.8114156980850046
+  },
+  "test_errors": {
+    "n_test": 381,
+    "n_errors": 50,
+    "errors_by_signer": {
+      "S2-01": [
+        12,
+        129
+      ],
+      "S2-03": [
+        9,
+        129
+      ],
+      "S2-29": [
+        10,
+        62
+      ],
+      "S2-31": [
+        19,
+        61
+      ]
+    },
+    "top_confusions": [
+      [
+        "seis",
+        "uno",
+        6
+      ],
+      [
+        "bien",
+        "por_favor",
+        3
+      ],
+      [
+        "cuatro",
+        "tres",
+        3
+      ],
+      [
+        "nueve",
+        "ocho",
+        2
+      ],
+      [
+        "bien",
+        "diez",
+        2
+      ],
+      [
+        "bano",
+        "mal",
+        2
+      ],
+      [
+        "hola",
+        "tres",
+        2
+      ],
+      [
+        "lo_siento",
+        "por_favor",
+        2
+      ],
+      [
+        "ocho",
+        "siete",
+        2
+      ],
+      [
+        "ayudar",
+        "hola",
+        1
+      ]
+    ]
+  }
+}

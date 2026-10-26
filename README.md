@@ -74,10 +74,8 @@ Se clasifican **43 señas aisladas** de la LSC (33 expresiones de cortesía y lo
 | Ficha del modelo y de los datos | [`MODEL_CARD.md`](MODEL_CARD.md) | *Model card* y *datasheet* resumida |
 | Decisión previa al test | [`DECISION.md`](reports/e3_final/DECISION.md) | Modelo y justificación registrados antes de abrir el test |
 | Protocolo de experimentos | [`EXPERIMENTOS.md`](reports/e2_avance/EXPERIMENTOS.md) | Pregunta y factor de cada experimento |
-| Presentación | _Enlace a la presentación_ | 8 a 12 diapositivas |
-| Video de sustentación | _Enlace al video_ | Defensa del equipo |
-
-La fuente LaTeX de cada informe está junto a su PDF (`*.tex`) y se compila con `xelatex` dos veces.
+| Presentación | [`presentacion.pdf`](reports/e3_final/presentacion.pdf) | 17 diapositivas y anexo de referencias |
+| Video de sustentación | [YouTube](https://youtu.be/7xBtHQd6UCg) | Defensa oral del equipo, con recorrido por este repositorio |
 
 ## 4. Datos y partición
 
@@ -205,7 +203,7 @@ El archivo incluye, además de los pesos, el estandarizador ajustado, la lista d
 ├── reports/
 │   ├── e1_plan/        Entrega 1: informe y resultados de la línea base
 │   ├── e2_avance/      Entrega 2: informe, corridas, figuras y tabla de experimentos
-│   └── e3_final/       Entrega 3: informe, decisión previa, test y análisis finales
+│   └── e3_final/       Entrega 3: informe, presentación, decisión previa, test y análisis finales
 ├── notebooks/          Exploración
 ├── MODEL_CARD.md       Ficha del modelo y de los datos
 ├── requirements.txt    Dependencias con rangos compatibles
@@ -226,6 +224,7 @@ El archivo incluye, además de los pesos, el estandarizador ajustado, la lista d
 | Eficiencia computacional | Tiempos de ajuste y latencia en los JSON de resultados y en la sección 2 |
 | Reproducibilidad: semillas, dependencias y pesos | Secciones 6 a 8; `requirements.lock`; versión `v3-final` |
 | Ficha del modelo y de los datos, riesgos y limitaciones | `MODEL_CARD.md`; Entrega 3, sección 9 |
+| Presentación y defensa oral | `reports/e3_final/presentacion.pdf`; video de sustentación (sección 3) |
 
 ## 11. Limitaciones y uso responsable
 
